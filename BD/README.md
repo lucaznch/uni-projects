@@ -1,12 +1,12 @@
 # Delivery 1
-The [first delivery]((p1/)) is divided into three exercises:
+The [first delivery](p1/) is divided into three exercises:
 - **1. Entity-Association Modeling**
 - **2. E-A Conversion -&gt; Relational**
 - **3. Relational Algebra and SQL**
 
 
 # Delivery 2
-The [second delivery]((p2/)) is divided into six exercises:
+The [second delivery](p2/) is divided into six exercises:
 - **1. Integrity Constraints**
 - **2. Completing the Database**
 - **3. Application Development**
