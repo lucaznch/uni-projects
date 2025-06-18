@@ -1,7 +1,7 @@
 # Software Engineering
 
-### Check [this repository](https://github.com/lucaznch/esof)!
+### Check [this repository](https://github.com/lucaznch/ESof)!
 
 ---
 
-Languages: **Java**, **Groovy** and **TypeScript**
+Programming: **Docker**, **Java**, **Groovy**, **Spring Boot**, **Maven**, **TypeScript**, **VueJS**
