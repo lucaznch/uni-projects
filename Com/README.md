@@ -1,6 +1,6 @@
 # Compilers
 
-### Check [this repository](https://github.com/lucaznch/Comp)!
+### Check the [original repository](https://github.com/lucaznch/Comp)!
 
 ---
 

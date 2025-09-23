@@ -1,6 +1,6 @@
 # Software Engineering
 
-### Check [this repository](https://github.com/lucaznch/ESof)!
+Check the [original repository](https://github.com/lucaznch/ESof)!
 
 ---
 

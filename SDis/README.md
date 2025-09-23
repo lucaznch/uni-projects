@@ -1,5 +1,7 @@
 # TupleSpaces
 
+Check the [original repository](https://github.com/lucaznch/SDis)!
+
 ## 1 Introduction
 
 The goal of the Distributed Systems project is to develop the TupleSpaces system, a service that implements a **distributed tuple space**. The system will be implemented using [gRPC](https://grpc.io/) and Java (with one exception, described later).

@@ -1,5 +1,6 @@
 # Artificial Intelligence Project 2023/2024
 
+Check the [original repository](https://github.com/lucaznch/IArt)!
 
 ## 1. Introduction
 The Artificial Intelligence curricular unit project aims to develop a program in Python 3.8 that solves an adaptation of the *Pipe Mania* problem using Artificial Intelligence search and problem-solving techniques.
@@ -13,9 +14,6 @@ It was later adapted for several other platforms by Lucasfilm Games, which gave 
 
 The objective of the game is to build a functional plumbing system to prevent water leaks.
 
-
-> [!NOTE]
-> this is a mirror of [this repository](https://github.com/lucaznch/IArt)
 
 ---
 
