@@ -1,49 +1,46 @@
-# Descrição do Problema
+# Problem Description
 
-O Engenheiro João Caracol foi contratado pela fábrica SuperMarble para optimizar uma das suas linhas de corte de chapas de mármore.
+Engineer João Caracol was hired by the SuperMarble factory to optimize one of its marble slab cutting lines.
 
-A linha recebe uma chapa de mármore que deve ser cortada de modo a produzir peças com dimenções requeridas pelos clientes da fábrica.
+The line receives a marble slab that must be cut to produce pieces with the dimensions required by the factory's customers.
 
-A linha dispõe de uma máquina de dois discos que consegue cortar chapas de um lado ao outro.
+The line features a two-disc machine that can cut slabs from one side to the other.
 
-O **processo de corte** funciona da seguinte maneira:
-* a chapa é cortada verticalmente ou horizontalmente;
-* cada uma das duas novas chapas produzidas volta a entrar na linha de corte ou sai da linha, caso corresponda às dimensões de uma das peças a serem produzidas ou já não seja possível convertê-la numa peça.
+The cutting process works as follows:
+* The slab is cut vertically or horizontally;
+* Each of the two new slabs produced is either re-entered or removed from the cutting line if it matches the dimensions of one of the pieces to be produced or if it is no longer possible to convert it into a piece.
 
+The factory is currently able to continue full production, so priority must be given to manufacturing higher-value pieces.
 
-A fábrica consegue neste momento dar curso toda a produção pelo que deve ser dada prioridade ao fabrico de peças de valor mais elevado.
+Engineer Caracol's objective is to:
+* **build a program that, given a slab of marble, calculates the maximum value that can be obtained from it by cutting it into pieces corresponding to the dimensions requested by the customer.**
 
-O objectivo do Eng. Caracol é:
-* **construir um programa que dada uma chapa de mármore calcula o valor máximo que pode ser obtido a patir da mesma cortando-a em peças correspondentes às dimensões solicitadas pelos clientes.**
+Engineer Caracol can produce multiple copies of the same piece as he sees fit.
 
+More specifically: the line receives a rectangular slab of marble with dimensions **X × Y**.
 
-O Eng. Caracol pode produzir várias cópias de uma mesma peça conforme considere adequado.
+Furthermore, Engineer Caracol has access to a list of **n** types of pieces to be produced, all with different dimensions.
 
-Mais concretamente: a linha recebe uma chapa rectangular de mármore de dimensões **X × Y**.
+Each type of piece **i ∈ {1, ..., n}** corresponds to a rectangle of marble with dimensions **ai × bi** and is sold at a price **pi**.
 
-Além disso, o Eng. Caracol tem acesso a uma lista com os **n** tipos de peças a serem produzidos, todos com dimensões diferentes.
-
-Cada tipo de peça **i ∈ {1, ..., n}** corresponde a um retângulo de mármore com dimensões **ai × bi** e é vendido a um preço **pi**.
-
-Nota: **as peças podem ser rodadas => 2x3 <=> 3x2**
+Note: **pieces can be rotated => 2x3 <=> 3x2**
 
 
 ## Input
 
-O ficheiro de entrada contém as dimensões da chapa a ser cortada e as dimensões dos vários tipos de peças solicitados.
-Estes valores são representados da seguinte forma:
-* a primeira linha contém dois inteiros positivos **X** e **Y** , separados por um espaço em branco, que correspondem às dimensões da chapa;
-* a segunda linha contém um inteiro positivo **n**, que corresponde ao número de tipos de peças que podem ser produzidas;
-* **n** linhas que descrevem cada um dos **i** tipos de peças que podem ser produzidas. Cada linha é composta por três inteiros positivos **ai** , **bi** e **pi** separados por um espaço em branco, onde **ai × bi** correspondem às dimensões do tipo de peça e **pi** ao preço da mesma.
-
+The input file contains the dimensions of the sheet to be cut and the dimensions of the various types of parts requested.
+These values ​​are represented as follows:
+* The first line contains two positive integers **X** and **Y**, separated by a space, which correspond to the sheet dimensions;
+* The second line contains a positive integer **n**, which corresponds to the number of types of parts that can be produced;
+* **n** lines describing each of the **i** types of parts that can be produced. Each line consists of three positive integers **ai**, **bi**, and **pi** separated by a space, where **ai × bi** correspond to the dimensions of the part type and **pi** to the price of the part.
 
 ## Output
 
-Deverá escrever no output o valor máximo que pode ser obtido a partir da chapa dada como input. 
-Caso nenhuma peça possa ser produzida deverá simplesmente imprimir 0.
+You should write to the output the maximum value that can be obtained from the sheet given as input.
+If no parts can be produced, simply print 0.
 
 
-## Exemplos
+## Examples
 
 **Input 1**
 ```
@@ -94,9 +91,11 @@ Caso nenhuma peça possa ser produzida deverá simplesmente imprimir 0.
 `12`
 
 
+# Compilation
+- C++: `g++ -std=c++11 -O3 -Wall file.cpp -lm`
+- C: `gcc -O3 -ansi -Wall file.c -lm`
+- Rust: `rustc --edition=2021 -C opt-level=3 file.rs`
+- Javac: `javac File.java`
+- Java: `java -Xss32m -Xmx256m -classpath . File`
+- Python: `python3 file.py`
 
-### Implementação
-O tempo necessário para implementar este projecto é inferior a 15 horas.
-
-Parâmetros de compilação:
-C++: g++ -std=c++11 -O3 -Wall file.cpp -lm

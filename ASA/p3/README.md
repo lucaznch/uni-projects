@@ -1,42 +1,39 @@
-# Descrição do Problema
+# Problem Description
 
-O Professor Natalino Caracol foi contratado pela empresa UbiquityInc, em Rovaniemi na Lapónia, para desenvolver um programa que permita estimar o lucro máximo que pode ser obtido com a produção e venda de brinquedos durante o Natal.
+Professor Natalino Caracol was hired by Ubiquity Inc., in Rovaniemi, Lapland, to develop a program to estimate the maximum profit that can be obtained from the production and sale of toys during Christmas.
 
-A empresa produz diariamente um conjunto de n brinquedos de madeira {x1 , . . . , xn }, onde cada brinquedo xi tem um lucro li.
+The company produces a set of n wooden toys daily {x1, . . . , xn}, where each toy xi has a profit li.
 
+In addition to a maximum production limit for each toy due to assembly line constraints, the company is limited to a maximum total number of toys that can be produced per day due to restrictions on cutting the boreal forest.
 
-Para além de um limite máximo de produção de cada brinquedo devido a restrições de linha de montagem, a empresa está limitada a uma quantidade máxima total de brinquedos que podem ser produzidos por dia, devido a restrições de corte da floresta boreal.
+Furthermore, this Christmas, the company decided, in addition to selling each toy individually, to also sell special packs containing three different toys, whose profit is greater than the sum of the individual profits of the toys that comprise them.
 
-Adicionalmente, este Natal a empresa decidiu, para além de vender cada brinquedo individualmente, vender também pacotes especiais contendo três brinquedos distintos, cujo lucro é maior do que a soma dos lucros individuais dos brinquedos que o constituem.
+The goal is to indicate to Rüdolf, CEO of Ubiquity Inc., the maximum profit that can be obtained daily.
 
-O objectivo consiste em indicar ao Rüdolf, CEO da UbiquityInc, qual o lucro máximo que se pode obter diariamente.
+Ubiquity Inc. will address the distribution problem later.
 
-A UbiquityInc, tratará posteriormente do problema da distribuição.
+The implementation should be based on Python using the PuLP library for LP problem-solving (https://pypi.org/project/PuLP/).
 
-A implementação deve ser baseada em Python com recurso à biblioteca PuLP para resolução de problemas LP (https://pypi.org/project/PuLP/).
+Examples are available at https://github.com/coin-or/pulp/tree/master/examples.
 
-Exemplos disponíveis em https://github.com/coin-or/pulp/tree/master/examples.
-
-
-**Nota**: Informação sobre o que incluir no relatório pode ser encontrada no template a ser disponibilizado na página da disciplina.
-
+**Note**: Information on what to include in the report can be found in the template available on the course page.
 
 ## Input
-O ficheiro de entrada contém informação sobre os n produtos, o lucro e a capacidade de produção da empresa de cada um, da seguinte forma:
+The input file contains information about the company's n products, profit, and production capacity for each, as follows:
 
-* Uma linha contendo três inteiros: t indicando o número de diferentes brinquedos passíveis de serem produzidos, p indicando o número de pacotes especiais, e max indicando o número máximo de brinquedos que podem ser produzidos por dia;
+* One line containing three integers: t indicating the number of different toys that can be produced, p indicating the number of special packages, and max indicating the maximum number of toys that can be produced per day;
 
-* Uma lista de n linhas, em que cada linha contém dois inteiros li e ci, indicando o lucro e a capacidade de produção do brinquedo i.
+* A list of n lines, where each line contains two integers, li and ci, indicating the profit and production capacity of toy i.
 
-* Uma lista de p linhas, em que cada linha contém quatro inteiros i, j, k, e lijk, indicando o lucro lijk do pacote especial {i, j, k}, e o nome dos produtos i, j, e k que o constituem.
+* A list of p lines, where each line contains four integers i, j, k, and lijk, indicating the profit lijk of the special bundle {i, j, k}, and the name of the products i, j, and k that constitute it.
 
-Quaisquer inteiros numa linha estão separados por exactamente um espaço em branco, não contendo qualquer outro carácter, a não ser o fim de linha.
+Any integers on a line are separated by exactly one whitespace character, containing no other characters except the end of the line.
 
 
 ## Output
-O programa deverá escrever no output um inteiro correspondendo ao lucro máximo que o Rüdolf pode obter diariamente.
+The program should write to the output an integer corresponding to the maximum profit that Rüdolf can obtain daily.
 
-### Exemplo 1
+### Example 1
 **Input**
 ```
 5 2 150
@@ -51,7 +48,7 @@ O programa deverá escrever no output um inteiro correspondendo ao lucro máximo
 **Output**
 `6440`
 
-### Exemplo 2
+### Example 2
 ## Input
 ```
 5 2 15
@@ -66,16 +63,7 @@ O programa deverá escrever no output um inteiro correspondendo ao lucro máximo
 ## Output
 `750`
 
-## Implementação
-A implementação do projecto deverá ser feita obrigatoriamente usando a linguagem de programação Python.
-
-O tempo necessário para implementar este projecto é inferior a 15 horas.
-
-A biblioteca PuLP deve ser instalada utilizando o comando:
-* python -m pip install pulp
-
-Devem ter algum solver de PL instalado, como por exemplo o GLPK (https://www.gnu.org/software/glpk/) ou o LP_solve.
-Para instalar o GLPK (por exemplo no Ubuntu): sudo apt-get install glpk-utils
-
-Parâmetros de execução:
-Python: python3 vossoprograma.py < ficheiro_de_input
+## Build
+```py
+python3 vossoprograma.py < ficheiro_de_input
+```

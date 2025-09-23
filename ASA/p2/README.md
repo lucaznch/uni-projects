@@ -1,27 +1,28 @@
-# Descrição do Problema
+# Problem Description
 
-O Professor João está a fazer um estudo para a taskforce do Governo responsável pelo estudo de doenças transmissíveis em Portugal. 
-A taskforce está particularmente interessada no tópico da transmissão de doenças entre a população portuguesa, de forma a estudar os melhores mecanismos de intervenção para conter a propagação de doenças.
-Para isso, o Professor João teve acesso aos dados da rede social TugaNet, que acredita ser representativa das reais interacções sociais entre os indivíduos da população portuguesa.
-Assim, de forma a estudar o pior caso de propagação de uma dada infecção em Portugal, o Professor João quer perceber qual o maior número de saltos que uma dada doença pode fazer.
+Professor João is conducting a study for the government task force responsible for studying communicable diseases in Portugal.
+The task force is particularly interested in the topic of disease transmission within the Portuguese population, aiming to study the best intervention mechanisms to contain the spread of disease.
+To this end, Professor João had access to data from the TugaNet social network, which he believes is representative of real social interactions between individuals in the Brazilian population.
+Thus, to study the worst-case scenario for the spread of a given infection in Portugal, Professor João wants to understand the maximum number of jumps a given disease can make.
 
-No entanto, tendo em conta a densidade das cidades portuguesas, o Professor João decidiu considerar um pressuposto simplificador:
-* indivíduos que se conhecem mutuamente de forma directa ou indirecta, ficam infectados instantaneamente.
+However, given the density of Portuguese cities, Professor João decided to consider a simplifying assumption:
+* individuals who know each other directly or indirectly become infected instantly.
 
 ## Input
-**O ficheiro de entrada contém a informação sobre a rede TugaNet, que é definida como um grafo dirigido de relações entre dois indivíduos**, da seguinte forma:
-- Uma linha contendo dois inteiros: o número **n** de indivíduos (n ≥ 2), e o número de relações **m** a indicar (m ≥ 0);
-- Uma lista em que cada linha **i** contém dois inteiros **x** e **y**, representando que o indivíduo **x** conhece o indivíduo **y**.
+**The input file contains information about the TugaNet network, which is defined as a directed graph of relationships between two individuals**, as follows:
+- A line containing two integers: the number **n** of individuals (n ≥ 2), and the number of relationships **m** to be indicated (m ≥ 0);
+- A list in which each line **i** contains two integers **x** and **y**, representing that individual **x** knows individual **y**.
 
-Quaisquer inteiros numa linha estão separados por exactamente um espaço em branco, não contendo qualquer outro carácter, a não ser o fim de linha.
-**Assuma que os grafos de input são dirigidos (potencialmente) cíclicos.**
-
+Any integers in a line are separated by exactly one whitespace character, containing no other character except the end of the line.
+**Assume that the input graphs are directed (potentially) cyclic.**
 
 ## Output
-O programa deverá escrever no output um inteiro **s** correspondendo ao **número máximo de saltos que uma doença pode fazer na rede TugaNet**.
+The program should write an integer **s** corresponding to the **maximum number of hops a disease can make in the TugaNet network**.
 
+### Example 1
 
-### Exemplo 1
+![example1](./example1.png)
+
 Input
 ```
 7 8
@@ -38,9 +39,12 @@ Output esperado
 `4`
 
 > [!NOTE]
-> No exemplo 1. o maior número de saltos corresponde ao caminho mais longo do grafo dado, que é 4.
+> In example 1, the largest number of hops corresponds to the longest path in the given graph, which is 4.
 
-### Exemplo 2
+### Example 2
+
+![example2](./example2.png)
+
 Input
 ```
 8 9
@@ -58,19 +62,22 @@ Output esperado
 `3`
 
 > [!NOTE]
-> No exemplo 2, o maior número de saltos é 3 e não 5. Note-se que o grafo dado é cíclico, por isso teremos que usar o pressuposto simplificador, que indivíduos que se conhecem mutuamente de forma directa ou indirecta, ficam infectados instantaneamente. Isto significa que os ciclos são contraídos em vértices únicos para computacionar o caminho mais longo.
+> In example 2, the largest number of hops is 3, not 5. Note that the given graph is cyclic, so we must use the simplifying assumption that individuals who know each other directly or indirectly become infected instantly. This means that cycles are collapsed into single vertices to compute the longest path.
+
+----
+
+## Optimizations
+Given the difficulty reported by some students in achieving a correct project that passes all tests, and given that for projects with low computational complexity graphs, as is the case with this project, all small optimizations influence multiplicative constants, we suggest:
+* using vector<vector<int>> instead of vector<list<int>> due to the overhead of using lists.
+* using std::ios::sync_with_stdio(0); // disable synchronization with c libs (printf / scanf)
+* using std::cin.tie(0); // discard cin buffer after each line of input
 
 
-## Implementação
-A implementação do projecto deverá ser feita preferencialmente usando a linguagem de programação C++.
-Importante: Observa-se que soluções recursivas podem esgotar o limite da pilha quando executadas sobre os testes de maior tamanho, pelo que se recomenda a implementação de algoritmos iterativos.
-O tempo necessário para implementar este projecto é inferior a 15 horas.
-Parâmetros de compilação:
-C++: g++ -std=c++11 -O3 -Wall file.cpp -lm
+# Compilation
+- C++: `g++ -std=c++11 -O3 -Wall file.cpp -lm`
+- C: `gcc -O3 -ansi -Wall file.c -lm`
+- Rust: `rustc --edition=2021 -C opt-level=3 file.rs`
+- Javac: `javac File.java`
+- Java: `java -Xss32m -Xmx256m -classpath . File`
+- Python: `python3 file.py`
 
-
-## Optimizações
-Dada a dificuldade reportada por alguns alunos em conseguirem ter um projecto correcto a passar os testes todos, e dado que para projectos com Grafos de baixa complexidade computacional, como é o caso deste projecto, todas as pequenas optimizações influenciarem as constantes multiplicativas, sugere-se:
-* o uso de vector<vector<int>> em vez de vector<list<int>> dado que o overhead do uso de listas.
-* o uso de std::ios::sync_with_stdio(0); // disable sync with c libs (printf/scanf)
-* o uso de std::cin.tie(0); // discard cin buffer after each line of input
