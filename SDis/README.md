@@ -1,281 +1,266 @@
 # TupleSpaces
 
-Este documento descreve o projeto da cadeira de Sistemas Distribuídos 2024/2025.
+## 1 Introduction
 
+The goal of the Distributed Systems project is to develop the TupleSpaces system, a service that implements a **distributed tuple space**. The system will be implemented using [gRPC](https://grpc.io/) and Java (with one exception, described later).
 
-## 1 Introdução
+The service allows one or more users (also called *workers*) to place tuples in the shared space, read existing tuples, and remove tuples from the space. A tuple is an ordered set of fields *<field_1, field_2, ..., field_n>*.
 
-O objetivo do projeto de Sistemas Distribuídos (SD) é desenvolver o sistema **TupleSpaces**, um serviço que implementa um *espaço de tuplos* distribuído. O sistema será concretizado usando [gRPC](https://grpc.io/) e Java (com uma exceção, descrita mais à frente neste enunciado).
+In this project, a tuple must be instantiated as a string (*string*). For example, the *string* containing `"<vacancy,sd,shift1>"`.
 
-O serviço permite a um ou mais utilizadores (também designados por _workers_ na literatura) colocarem tuplos no espaço partilhado, lerem os tuplos existentes, assim como retirarem tuplos do espaço. Um tuplo é um conjunto ordenado de campos *<campo_1, campo_2, ..., campo_n>*. 
+In a tuple space, multiple identical instances can coexist. For example, there might be multiple tuples `"<vacancy,sd,shift1>"`, indicating the existence of multiple vacancies.
 
-Neste projeto, um tuplo deve ser instanciado como uma cadeia de caracteres (*string*). Por exemplo, a *string* contendo `"<vaga,sd,turno1>"`.
+You can search the tuple space for a given tuple to read or remove. In the simplest variant, you can search for a specific tuple. For example, `"<vacancy,sd,shift1>"`.
 
-No espaço de tuplos podem co-existir várias instâncias idênticas. Por exemplo, podem existir múltiplos tuplos `"<vaga,sd,turno1>"`, indicando a existência de várias vagas. 
+Alternatively, you can use Java regular expressions to allow matching with multiple values. For example, `"<vacancy,sd,[^,]+>"` matches both `"<vacancy,sd,shift1>"` and `"<vacancy,sd,shift2>"`.
 
-É possível procurar, no espaço de tuplos, por um dado tuplo para ler ou retirar. Na variante mais simples, pode-se pesquisar por um tuplo concreto. Por exemplo, `"<vaga,sd,turno1>"`.
+More information about distributed tuple spaces, as well as a description of a system that realizes this abstraction, can be found in the course bibliography and in the following article:
+- A. Xu and B. Liskov. [A Design for a Fault-Tolerant, Distributed Implementation of Linda](http://www.ai.mit.edu/projects/aries/papers/programming/linda.pdf). In 1989, The Nineteenth International Symposium on Fault-Tolerant Computing. Digest of Papers (FTCS), pages 199–206.
 
-Alternativamente, é possível usar [expressões regulares Java](https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html#sum) para permitir o emparelhamento com múltiplos valores. Por exemplo, `"<vaga,sd,[^,]+>"` tanto emparelha com  `"<vaga,sd,turno1>"`, com  `"<vaga,sd,turno2>"`.
+The operations available to the user are [^1] *put*, *read*, *take*, and *getTupleSpacesState*.
 
-Mais informação sobre os espaços de tuplos distribuídos, assim como a descrição de um sistema que concretiza esta abstração pode ser encontrada na bibilografia da cadeira e no seguinte artigo:
+[^1]: We use the English nomenclature from the course bibliography, but replace *write* with *put*, which seems clearer to us. Note that the original article uses a different nomenclature.
 
-A. Xu and B. Liskov. [A design for a fault-tolerant, distributed implementation of linda](http://www.ai.mit.edu/projects/aries/papers/programming/linda.pdf). In 1989 The Nineteenth International Symposium on Fault-Tolerant Computing. Digest of Papers(FTCS), pages 199–206.
+* The *put* operation adds a tuple to the shared space.
 
-As operações disponíveis para o utilizador são as seguintes [^1] *put*, *read*, *take* e *getTupleSpacesState*.
+* The *read* operation accepts the tuple description (possibly with a regular expression) and returns a tuple that matches the description, if any. This operation blocks the client until a tuple that matches the description is available. The tuple is not removed from the tuple space.
 
-[^1]: Usamos a nomenclatura em Inglês da bibliografia da cadeira, mas substituímos o nome *write* por *put*, que nos parece mais claro. Note-se que o artigo original usa uma nomenclatura diferente.
+* The *take* operation accepts the tuple description (possibly with a regular expression) and returns a tuple that matches the description. This operation blocks the client until a tuple that matches the description is available. The tuple is removed from the tuple space.
 
-* A operação *put* acrescenta um tuplo ao espaço partilhado.
+* The *getTupleSpacesState* operation takes no arguments and returns a list of all tuples on each server.
 
-* A operação *read* aceita a descrição do tuplo (possivelmente com expressão regular) e retorna *um* tuplo que emparelhe com a descrição, caso exista. Esta operação bloqueia o cliente até que exista um tuplo que satisfaça a descrição. O tuplo *não* é retirado do espaço de tuplos.
+Users access the **TupleSpaces** service through a client process, which interacts with one or more servers offering the service through remote procedure calls.
 
-* A operação *take* aceita a descrição do tuplo (possivelmente com expressão regular) e retorna *um* tuplo que emparelhe com a descrição. Esta operação bloqueia o cliente até que exista um tuplo que satisfaça a descrição. O tuplo *é* retirado do espaço de tuplos.
 
-* A operação *getTupleSpacesState* não recebe argumentos e retorna uma lista de todos os tuplos em cada servidor.
+## 2 Project Objectives and Steps
 
-Os utilizadores acedem ao serviço **TupleSpaces** através de um processo cliente, que interage com um ou mais servidores que oferecem o serviço, através de chamadas a procedimentos remotos.
+In this project, students will:
 
+- Develop a distributed system using a current **RPC framework** (**gRPC**), practicing its main communication models (blocking stubs and asynchronous stubs).
 
-## 2 Objetivos e etapas do projecto
+- **Replicate** a distributed service using a realistic architecture.
 
-Neste projeto, os estudantes irão:
+- Understand how **concurrency** is prevalent in a distributed system: not only concurrency between distributed processes, but also concurrency between threads running on servers. Using this concurrency as a starting point, implement algorithms that ensure the desired coherence.
 
-- Desenvolver um sistema distribuído usando uma *framework* de RPC atual (gRPC), exercitando os seus principais modelos de comunicação (*stubs* bloqueantes e *stubs* assíncronos).
+- Investigate **academic research articles**, which describe some of the algorithms implemented in the project. Understand how advances in these scientific fields are described in these articles.
 
-- Replicar um serviço distribuído, usando uma arquitetura realista. 
+The project has three objectives. Two are mandatory and one is optional.
 
-- Entender como a concorrência é prevalente num sistema distribuído: não só a concorrência entre os processos distribuídos, como a concorrência entre as *threads* que se executam nos servidores. Partindo dessa concorrência, pôr em prática algoritmos que asseguram a coerência desejada.
+To achieve each objective, we define multiple steps. Below, we describe each objective and its constituent steps.
 
-- Ter um contacto com artigos de investigação académica, os quais descrevem alguns dos algoritmos implementados no projeto. Perceber como os avanços nestes domínios científicos são descritos nestes artigos.
 
-O projeto passa por três objetivos. Dois são obrigatórios e um é opcional.
+### Objective A
 
-Para concretizar cada objetivo, definimos múltiplas etapas. De seguida descrevemos cada objetivo e as etapas que o constituem.
+Develop a solution in which the service is provided by a single server (i.e., a simple client-server architecture, without server replication), which accepts requests at a well-known address/port.
 
+Clients interact with a replication **frontend**, which in turn acts as a mediator with the server.
 
-### Objetivo A
+Both clients and the *frontend* must use gRPC *blocking stubs*.
 
-Desenvolver uma solução em que o serviço é prestado por um único servidor (ou seja, uma arquitetura cliente-servidor simples, sem replicação de servidores), que aceita pedidos num endereço/porto bem conhecido.
+#### Step A. 1
 
-Os clientes interagem com um *front-end* de replicação, que por sua vez atua como mediador com o servidor.
+System implemented without a frontend, in which clients interact directly with the server.
 
-Tanto os clientes como o *front-end* devem usar os *blocking stubs* do gRPC.
+Two clients are available, one implemented in Java and the other in Python.
 
-#### Etapa A.1
+#### Step A. 2
 
-Sistema implementado sem *front-end*, em que os clientes interagem diretamente com o servidor.
+With a frontend in the path between clients and the server.
 
-Dois clientes disponíveis, um implementado em Java e outro em Python.
+Note:
+- The system must support multiple frontends running, each serving a subset of clients. However, in this project, we will only test the case of one frontend.
 
 
-#### Etapa A.2
+### Objective B
 
-Com *front-end* no caminho entre clientes e servidor.
+Develop an alternative solution where **the service is replicated across three servers**. In this solution, the front-end will need to use non-blocking gRPC stubs.
 
-Nota: O sistema deve suportar que existam múltiplos *front-ends* em execução, cada um servindo um sub-conjunto de clientes. No entanto, no projeto só testaremos o caso de um *front-end*.
+The remote interface (`.proto` file) for the replicated servers is not provided in the codebase.
 
+Each group must create this remote interface. We recommend adapting the `TupleSpaces.proto` file provided by the instructors. Interfaces that differ unnecessarily from `TupleSpaces.proto` will be penalized.
 
-### Objetivo B
+#### Step B. 1
 
-Desenvolver uma solução alternativa em que o serviço é replicado, **em três servidores**. Nesta solução, o *front-end* precisará recorrer a *non-blocking stubs* do gRPC.
+Develop the *read* and *put* operations (not supporting the *take* operation for now), following the Xu and Liskov algorithm (mentioned above).
 
-A interface remota (ficheiro `.proto`) dos servidores replicados não é fornecida no código base.
+In short, when a client wishes to invoke one of these operations,
+the front-end begins by sending the request to all servers and then waits for responses (from one server, in the case of _read_, or from all servers, in the case of _put_).
 
-Cada grupo deve compor essa interface remota. Recomendamos que seja uma adaptação do `TupleSpaces.proto` fornecido pelos docentes. Serão penalizadas interfaces que divirjam desnecessariamente do `TupleSpaces.proto`.
+To allow debugging of the replicated system's operation, the client, when invoking a replicated operation (*read*, *put*, and subsequently *take*), should also be allowed to optionally **specify a delay** (in seconds) that each replica receiving the request should wait before executing it.
 
+The delay associated with each request should be sent as *gRPC metadata* in the request to the front-end and in the requests that the front-end sends to the replicas.
 
-#### Etapa B.1
+#### Step B. 2
 
-Desenvolver as operações _read_ e _put_ (não suportando, para já, a operação _take_), seguindo o algoritmo de Xu e Liskov (citado acima).
+Also develop the code necessary to execute the _take_ operation.
 
-Resumidamente, quando um cliente pretende invocar uma dessas operações, 
-o *front-end* começa por enviar o pedido a todos os servidores e depois aguarda pelas 
-respostas (de um servidor, no caso de _read_, ou de todos os servidores, no caso de _put_).
+Instead of the solution proposed in the Xu/Liskov algorithm, a solution based on **Maekawa's mutual exclusion algorithm**, described in the course bibliography, should be developed.
 
-Para permitir depurar o funcionamento do sistema replicado, deve também ser permitido que o cliente, quando invoca uma operação replicada (*read*, *put* e, mais tarde, *take*), possa opcionalmente especificar um atraso (em segundos) que cada réplica que recebe o pedido deve esperar antes de o executar.
+Conceptually, the front-end should implement a take request by performing the following three steps:
 
-O atraso associado a cada pedido deve ser enviado como *gRPC metdata* no pedido ao *front-end* e pelos pedidos que o *front-end* envia às réplicas.
+1. Enter the critical section (according to Maekawa's algorithm);
+2. Once in mutual exclusion, invoke the *take* operation on all replicas and wait for a response from all of them;
+3. Exit the critical section (according to Maekawa's algorithm).
 
+The following constraints must be taken into account:
 
-#### Etapa B.2
+- Regarding the centralized tuple space constructed in the previous step, the replicated solution must assume the following restriction: the *take* operation can only receive the designation of a specific tuple (i.e., regular expressions are not accepted as arguments for the replicated *take* operation).
 
-Desenvolver também o código necessário para executar a operação _take_.
+- It must be assumed that each client has a numeric **client_id**, which is passed as an argument when the client is launched.
 
-Em vez da solução proposta no algoritmo de Xu/Liskov, deveser desenvolvida uma solução baseada no algoritmo de exclusão mútua de Maekawa, descrito na bibliografia da cadeira.
+Given this *client_id*, the *voter set, V_i,* used by Maekawa's algorithm should be the following: *{client_id mod 3, (client_id + 1) mod 3}* (where each element in the set identifies a replica, from 0 to 2).
 
-Conceptualmente, o *front-end* deve implementar um pedido _take_ executando os três passos seguintes:
+- Preventing **deadlock** situations is not part of this project.
 
-1. Entrar na secção crítica (segundo o algoritmo de Maekawa),
-2. Assim que estiver em exclusão mútua, invocar a operação _take_ em todas as réplicas e aguardar por resposta de todas,
-3. Sair da secção crítica  (segundo o algoritmo de Maekawa).
+- The algorithm described in Maekawa's original paper includes important differences that should not be considered in this project. In other words, the reference is the algorithm described in the course bibliography.
 
-Devem ser tidas em conta as seguintes restrições:
+We will prioritize implementations that, while respecting the design described above, allow the replicated system to serve *take* requests to different tuples in parallel.
 
-- Em relação ao espaço de tuplos centralizado, construído na etapa anterior, a solução replicada deve assumir a seguinte restrição: a operação _take_ só pode receber a designação de um tuplo concreto (ou seja, não são aceites expressões regulares como argumento à operação _take_ replicada).
 
-- Deve assumir-se que cada cliente tem um *client_id* numérico, que é passado como argumento quando o cliente é lançado. 
+### Objective C
 
-Dado esse *client_id*, o *voter set, V_i,* usado pelo algoritmo de Maekawa deve ser o seguinte: *{client_id mod 3, (client_id + 1) mod 3}* (em que cada elemento no conjunto identifica uma réplica, de 0 a 2).
+Refine the solution obtained in the previous objective.
 
-- Fica de fora deste projeto prevenir situações de interblocagem (*deadlock*).
+#### Step C.1
 
-- O algoritmo descrito no artigo original de Maekawa inclui diferenças importantes que não devem ser consideradas neste projeto. Por outras palavras, a referência é o algoritmo descrito na bibliografia da cadeira.
+Extend the solution to allow the *take* operation to also receive a regular expression as an argument.
 
-Valorizaremos implementações que, embora respeitando o desenho descrito acima, permitam que o sistema replicado sirva em paralelo pedidos *take* a tuplos diferentes.
+As in the previously constructed solution, the first step of the algorithm continues to send the request to only one *voter set*.
 
+#### Step C.2
 
-### Objetivo C
+Optimize the solution constructed in step B.2, trying to reduce the number of messages exchanged and/or the waiting time in the *front-end* critical path.
 
-Refinar a solução obtida no objetivo anterior.
+Suggestion: See the discussion in section 4.2 of the Xu and Liskov paper.
 
+To submit the solution for steps C.1 and/or C.2, in addition to the solution code, each group is also required to submit a document of no more than 2 pages describing the solution design.
 
-#### Etapa C.1
+## 3 Project Execution Phasing
 
-Estender a solução de forma a permitir que a operação *take* passe a poder também receber uma expressão regular como argumento.
+Students may choose to develop only objectives A and B of the project (*difficulty level **"Bring 'em on!"***) or also objective C (*difficulty level **"I am Death incarnate!"***).
 
-Tal como na solução construída anteriormente, o primeiro passo do algoritmo continuar a enviar o pedido a um *voter set* apenas.
+The chosen difficulty level affects how each group's project is evaluated and the maximum score that can be achieved (see Section 6 of this announcement).
 
+The project includes three deliverables. The deadline for each deliverable (i.e., the due date) is published on the SD labs website.
 
-#### Etapa C.2
+Depending on the difficulty level chosen, the phasing of the steps over time will differ.
 
-Otimizar a solução composta na etapa B.2, tentando reduzir o número de mensagens trocadas e/ou o tempo de espera no caminho crítico do *front-end*.
+### Phasing of the "Bring 'em on!" Difficulty Level
 
-Sugestão: ver a discussão na secção 4.2 do artigo de Xu e Liskov.
+#### Delivery 1
 
-Para submissão da solução para as etapas C.1 e/ou C.2, além do código da solução, é também exigido que cada grupo submeta um documento com um máximo de 2 páginas a descrever o desenho da solução.
+- Step A. 1
 
+#### Delivery 2
 
-## 3 Faseamento da execução do projeto
+- Steps A. 2 and B. 1
 
-Os alunos poderão optar por desenvolver apenas os objetivos A e B do projecto (nível de dificuldade "Bring 'em on!") ou também o objetivo C (nível de dificuldade "I am Death incarnate!"). Note-se que o nível de dificuldade "Don't hurt me" não está disponível neste projecto.
+#### Delivery 3
 
-O nível de dificuldade escolhido afeta a forma como o projeto de cada grupo é avaliado e a cotação máxima que pode ser alcançada (ver Secção 6 deste anunciado).
+- Steps B. 2 and C. 1
 
-O projeto prevê 3 entregas. A data final de cada entrega (ou seja, a data de cada entrega) está publicada no site dos laboratórios de SD. 
+### Difficulty Level "I am Death incarnate!" Phase-in
 
-Dependendo do nível de dificuldade seguido, o faseamento das etapas ao longo do tempo será distinto.
+#### Delivery 1
 
-### Faseamento do nível de dificuldade "Bring 'em on!"
+- Steps A. 1 and A. 2
 
-#### Entrega 1
+#### Delivery 2
 
-  - Etapa A.1
+- Steps B. 1 and B. 2
 
-#### Entrega 2
+#### Delivery 3
 
-  - Etapas A.2 e B.1
+- Steps C. 1 and C. 2
 
-#### Entrega 3
 
-  - Etapas B.2 e C.1
+## 4 Processes
 
-### Faseamento do nível de dificuldade "I am Death incarnate!"
+### *TupleSpaces* Servers
 
-#### Entrega 1
-
-  - Etapas A.1 e A.2
-
-#### Entrega 2
-
-  - Etapas B.1 e B.2
-
-#### Entrega 3
-
-  - Etapas C.1 e C.2
-
-
-## 4 Processos
-
-
-### Servidores *TupleSpaces*
-
-Os servidores devem ser lançados recebendo como argumento único o seu porto.
-Por exemplo (**$** representa a *shell* do sistema operativo):
+Servers must be launched by receiving their port as a single argument.
+For example (**$** represents the operating system *shell*):
 
 `$ mvn exec:java -Dexec.args="3001"`
 
-As interfaces remotas que devem ser usadas para as diferentes implementações do servidor TupleSpaces encontram-se definidas nos ficheiros *proto* fornecidos pelo corpo docente juntamente com este enunciado.
-
+The remote interfaces to be used for the different TupleSpaces server implementations are defined in the *proto* files provided by the faculty along with this statement.
 
 ### Front-end
 
-O *front-end* é simultaneamente um servidor (pois recebe e responde a pedidos dos clientes) e um cliente (pois efetua invocações remotas ao(s) servidore(s) TupleSpaces).
+The *front-end* is simultaneously a server (as it receives and responds to client requests) and a client (as it makes remote invocations to the TupleSpaces server(s)).
 
-Quando é lançado, recebe o porto em que deve oferecer o seu serviço remoto, assim como os pares de nome de máquina e porto dos servidores TupleSpaces com os quais vai interagir (um servidor na variante A, três servidores nas variantes seguintes).
+When launched, it receives the port on which it should offer its remote service, as well as the hostname and port pairs of the TupleSpaces servers with which it will interact (one server in variant A, three servers in the following variants).
 
-Por exemplo, na etapa 1.2 (ainda sem replicação), o *front-end* pode ser lançado assim para usar o porto 2001 e ligar-se ao servidor TupleSpaces em localhost:3001:
+For example, in step 1.2 (still without replication), the *front-end* could be launched like this to use port 2001 and connect to the TupleSpaces server at localhost:3001:
 
 `$ mvn exec:java -Dexec.args="2001 localhost:3001"`
 
+### Clients
 
-### Clientes
+Client processes receive commands from the console. All client processes should display the *>* symbol whenever they are waiting for a command to be entered.
 
-Os processos cliente recebem comandos a partir da consola. Todos os processos cliente deverão mostrar o símbolo *>* sempre que se encontrarem à espera que um comando seja introduzido.
+For all commands, if no error occurs, client processes should print `"OK"` followed by the response message, as generated by the toString() method of the compiler-generated class `protoc`, as illustrated in the examples below.
 
-Para todos os comandos, caso não ocorra nenhum erro, os processos cliente devem imprimir "OK" seguido da mensagem de resposta, tal como gerada pelo método toString() da classe gerada pelo compilador `protoc`, conforme ilustrado nos exemplos abaixo. 
+If a command generates an error on the server side, this error should be transmitted to the client using gRPC error handling mechanisms (in the case of Java, encapsulated in exceptions). In these situations, when the client receives an exception after a remote invocation, it should simply print a message describing the corresponding error.
 
-No caso em que um comando origina algum erro do lado do servidor, esse erro deve ser transmitido ao cliente usando os mecanismos do gRPC para tratamento de erros (no caso do Java, encapsulados em exceções). Nessas situações, quando o cliente recebe uma exceção após uma invocação remota, este deve simplesmente imprimir uma mensagem que descreva o erro correspondente.
-
-Os programas de ambos os tipos de clientes recebem como argumentos o nome da máquina e porto onde o _front-end_ do TupleSpace (ou, na etapa 1.1, o servidor TupleSpaces) pode ser encontrado, assim como o *client-id* (ver etapa B.2). Por exemplo, o cliente Java pode ser lançado assim:
+Both client programs receive as arguments the hostname and port where the TupleSpace frontend (or, in step 1.1, the TupleSpaces server) can be found, as well as the client ID (see step B.2). For example, the Java client can be launched like this:
 
 `$ mvn exec:java -Dexec.args="localhost:2001 1"`
 
-e o cliente Python pode ser lançado assim:
+and the Python client can be launched like this:
 
 `$ python3 client_main.py localhost:2001 1`
 
-Para a etapa 2.2 (operação _take_), os programas cliente devem receber como argumento um identificador de cliente (um inteiro que se pressupõe único entre processos cliente).
+For step 2.2 (the *take* operation), client programs must receive as an argument a client identifier (an integer assumed to be unique across client processes).
 
-Existe um comando para cada operação do serviço: `put`, `read`, `take` e `getTupleSpacesState`.
+There is a command for each service operation: `put`, `read`, `take`, and `getTupleSpacesState`.
 
-Os 3 primeiros recebemu uma *string*, delimitada por `<` e `>` e sem conter qualquer espaço entre esses símbolos, que define um tuplo ou, no caso dos comandos `read` e `take`, uma expressão regular (usando a sintaxe das expressões regulares em Java) que especifica o padrão de tuplos pretendidos.
+The first three receive a string, delimited by `<` and `>` and without any spaces between these symbols, that defines a tuple or, in the case of the `read` and `take` commands, a regular expression (using Java's regular expression syntax) that specifies the desired pattern of tuples.
 
-Um exemplo:
+An example:
 
+```bash
+> put <vacancy,sd,shift1>
+OK
+
+> put <vacancy,sd,shift2>
+OK
+
+> take <vacancy,sd,shift1>
+OK
+<vacancy,sd,shift1>
+
+> read <vacancy,sd,[^,]+>
+OK
+<vacancy,sd,shift2>
 ```
-> put <vaga,sd,turno1>
-OK
 
-> put <vaga,sd,turno2>
-OK
+Starting from step B.1, any of the above commands can receive three additional *optional* integer arguments (non-negative). These integers define delays that each replica must apply before executing the request (see the description of step B.1).
 
-> take <vaga,sd,turno1>
-OK
-<vaga,sd,turno1>
+There are also two additional commands, which do not result in remote invocations:
 
-> read <vaga,sd,[^,]+>
-OK
-<vaga,sd,turno2>
-```
+- `sleep`, which blocks the client for the number of seconds passed as the only argument.
 
-A partir da etapa B.1, qualquer um dos comandos acima pode receber mais 3 argumentos *opcionais* do tipo inteiro (não negativo). Estes inteiros definem atrasos que  que cada réplica deve aplicar antes de executar o pedido (ver descrição da etapa B.1)
-
-Existem também dois comandos adicionais, que não resultam em invocações remotas: 
-
--  `sleep`, que bloqueia o cliente pelo número de segundos passado como único argumento.
-
--  `exit`, que termina o cliente.
+- `exit`, which terminates the client.
 
 
-## 5 Outras considerações
+## 5 Other Considerations
 
-### Opção de *debug*
+### The *debug* option
 
-Todos os processos devem poder ser lançados com uma opção "-debug". Se esta opção for seleccionada, o processo deve imprimir para o "stderr" mensagens que descrevam as ações que executa. O formato destas mensagens é livre, mas deve ajudar a depurar o código. Deve também ser pensado para ajudar a perceber o fluxo das execuções durante a discussão final.
+All processes must be able to be launched with the "-debug" option. If this option is selected, the process must print messages to "stderr" describing the actions it performs. The format of these messages is free, but should help debug the code. It should also be designed to help understand the flow of execution during the final discussion.
 
+### Interaction Model, Failures, and Security
 
-### Modelo de Interação, Faltas e Segurança
+It should be assumed that neither servers, front-ends, nor clients can fail.
 
-Deve assumir-se que nem os servidores, nem os *front-ends*, nem os clientes podem falhar. 
+It should also be assumed that TCP connections (used by gRPC) handle situations such as message loss, reordering, or duplication.
 
-Deve também assumir-se que as ligações TCP (usadas pelo gRPC) tratam situações de perda, reordenação ou duplicação de mensagens.  
+However, messages can be arbitrarily late, so the system is asynchronous.
 
-No entanto, as mensagens podem atrasar-se arbitrariamente, logo o sistema é assíncrono. 
+It is outside the scope of the project to address security-related issues (e.g., user authentication, confidentiality, or message integrity).
 
-Fica fora do âmbito do projeto resolver os problemas relacionados com a segurança (e.g., autenticação dos utilizadores, confidencialidade ou integridade das mensagens).
+### Persistence
 
-
-### Persistência
-
-Não se exige nem será valorizado o armazenamento persistente do estado dos servidores.
+Persistent storage of server state is not required or valued.
 
