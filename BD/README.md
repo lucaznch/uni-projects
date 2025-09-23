@@ -20,4 +20,5 @@ Check [exam](exam/) to see a short and very incomplete summary of the material f
 
 ---
 
-Language: **SQL**
+Programming: **SQL**, **PostgreSQL** and **Python**
+
