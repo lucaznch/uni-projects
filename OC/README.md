@@ -4,11 +4,6 @@ this project consists of three assignments:
 2. [hardware profiling (cache)](p2/)
 3. [pipeline](p3/)
 
-
-> [!NOTE]
-> this is a mirror of [this repository](https://github.com/lucaznch/OC)
-
-
 ---
 
 Languages: **C** and **Assembly**
