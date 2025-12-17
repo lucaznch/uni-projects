@@ -1,5 +1,6 @@
 # Databases summary
-This **incomplete** summary was made as a way to study for my exam, and definitely not to use it to copy during the exam!<br>
+
+This **incomplete** summary was made as a way to study for my exam.
 
 **Contents**:
 1. [Databases and Database Management Systems](#databases-and-database-management-systems-dbms)

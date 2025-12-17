@@ -1,5 +1,7 @@
-## Computer Science and Engineering @ IST
-Here you can find some projects I did during the course
+## BSc in Computer Science and Engineering @ IST
+
+Here you can find *some* projects I did during the degree.
+
 > it ain't much, but it's honest work
 
 ### 1st year
